@@ -48,6 +48,13 @@ test alias l >/dev/null 2>&1 || alias l='ls -CF'
 test alias wiki >/dev/null 2>&1 || alias wiki='cd $HOME/workspace/wiki && git pull && obsidian && git add --all && git commit -am "wiki updates (notebook)" && git push'
 test alias info >/dev/null 2>&1 || alias info='informant --file $HOME/.cache/informant.dat'
 
+# Daily development
+test alias claude-dev >/dev/null 2>&1 || alias claude-dev='claude --system-prompt "$(cat ~/.claude/contexts/dev.md)"'
+# PR review mode
+test alias claude-review >/dev/null 2>&1 || alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
+# Research/exploration mode
+test alias claude-research >/dev/null 2>&1 || alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+
 ##
 # FUNCTIONS/APPS
 ##
