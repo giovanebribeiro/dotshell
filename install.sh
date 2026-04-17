@@ -38,6 +38,9 @@ ln -s "$SCRIPT_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 # Store this directory inside the rc file
 echo "$SCRIPT_DIR" > $HOME/.dotshellrc
 
+# install ux/uvx
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 

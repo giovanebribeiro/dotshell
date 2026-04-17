@@ -243,28 +243,17 @@ then
   command -v informant > /dev/null 2>&1 && { info list --unread; echo; }
 fi
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# Loads sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
-if [ ! -f $SDKMAN_DIR/bin/sdkman-init.sh ]; then
-   curl -s "https://get.sdkman.io" | bash
-   echo "!!!!! ATTENTION !!!!!"
-   echo "The sdkman installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
-fi
 [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
-#
+# Loads nvm
 export NVM_DIR="$HOME/.nvm"
-if [ ! -f $NVM_DIR/nvm.sh ]; then
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-    echo "!!!!! ATTENTION !!!!!"
-    echo "The nvm installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
-fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-if [ ! -f "$HOME/.local/share/../bin/env" ]; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    echo "!!!!! ATTENTION !!!!!"
-    echo "The uv/uvx installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
-fi
+# Loads uv/uvx
 . "$HOME/.local/share/../bin/env"
+
+# Loads cargo
+. "$HOME/.cargo/env"
