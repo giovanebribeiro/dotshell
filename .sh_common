@@ -21,6 +21,11 @@ test alias myip > /dev/null 2>&1 || alias myip='curl ipinfo.io/ip'
 test alias net > /dev/null 2>&1 || alias net='netstat -tlnp'
 test alias untar > /dev/null 2>&1 || alias untar='tar -zxvf'
 test alias keygen >/dev/null 2>&1 || alias keygen='ssh-keygen -b 7168 -t rsa'
+
+# Permite a extração do Dockerfile de uma determinada imagem
+# exemplo de uso: dfimage -sV=1.36 nginx:latest
+test alias dfimage > /dev/null 2>&1 || alias dfimage="docker run -v /var/run/docker.sock:/var/run/docker.sock --rm alpine/dfimage -sV=1.36"
+
 #
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -41,6 +46,14 @@ test alias ll >/dev/null 2>&1 || alias ll='ls -l'
 test alias l >/dev/null 2>&1 || alias l='ls -CF'
 
 test alias wiki >/dev/null 2>&1 || alias wiki='cd $HOME/workspace/wiki && git pull && obsidian && git add --all && git commit -am "wiki updates (notebook)" && git push'
+test alias info >/dev/null 2>&1 || alias info='informant --file $HOME/.cache/informant.dat'
+
+# Daily development
+test alias claude-dev >/dev/null 2>&1 || alias claude-dev='claude --system-prompt "$(cat ~/.claude/contexts/dev.md)"'
+# PR review mode
+test alias claude-review >/dev/null 2>&1 || alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
+# Research/exploration mode
+test alias claude-research >/dev/null 2>&1 || alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
 
 ##
 # FUNCTIONS/APPS
@@ -167,6 +180,35 @@ gpg-dec() {
   gpg -d -o "$output_file" "$input_file" && echo "✔ Desencriptado com sucesso: $output_file"
 }
 
+aws-login() {
+
+    if ! which aws &>/dev/null; then
+	    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+	    cd /tmp
+	    unzip awscliv2.zip
+	    sudo ./aws/install
+	    cd $HOME
+    fi
+    
+    SSO_SESSION_NAME=""
+    [ -z ${AWS_SSO_SESSION_NAME+x} ] || SSO_SESSION_NAME="--sso-session $AWS_SSO_SESSION_NAME"
+
+    PROFILE=default
+    [ -n "$1" ] && PROFILE=$1
+
+    if command -v aws >/dev/null 2>&1
+    then
+        aws sts get-caller-identity &> /dev/null
+        EXIT_CODE="$?"
+        if [ $EXIT_CODE != 0 ]; then
+            aws sso login $SSO_SESSION_NAME
+        fi
+
+        aws configure export-credentials --profile $PROFILE --format env-no-export
+    fi
+
+}
+
 # test later
 #changeMac(){
 #  local mac=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
@@ -185,15 +227,14 @@ gpg-dec() {
 # General exports
 export NODE_ENV="development"
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 export EDITOR=vim
 export TMPDIR=/tmp
 export CARGO_NET_GIT_FETCH_WITH_CLI=true
 
-##
-# ALIAS
-##
-test alias info >/dev/null 2>&1 || alias info='informant --file $HOME/.cache/informant.dat'
-
+#
+# OTHER STUFF
+#
 flag_file="/tmp/flag_file"
 if [ ! -f $flag_file ]
 then
@@ -202,6 +243,28 @@ then
   command -v informant > /dev/null 2>&1 && { info list --unread; echo; }
 fi
 
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+if [ ! -f $SDKMAN_DIR/bin/sdkman-init.sh ]; then
+   curl -s "https://get.sdkman.io" | bash
+   echo "!!!!! ATTENTION !!!!!"
+   echo "The sdkman installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
+fi
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+#
 export NVM_DIR="$HOME/.nvm"
+if [ ! -f $NVM_DIR/nvm.sh ]; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+    echo "!!!!! ATTENTION !!!!!"
+    echo "The nvm installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
+fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+if [ ! -f "$HOME/.local/share/../bin/env" ]; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    echo "!!!!! ATTENTION !!!!!"
+    echo "The uv/uvx installation adds some reduntant code at .bashrc and .zsh files. Remove this snippets"
+fi
+. "$HOME/.local/share/../bin/env"

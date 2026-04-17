@@ -114,11 +114,6 @@ source $HOME/.sh_common
 # Complements
 # You may want to put all your additions into a separate file like
 # ~/.my_bash_complements, instead of adding them here directly.
-if [ -f $HOME/.my_shell_complements ]; then
-   . $HOME/.my_shell_complements
-fi
- 
-# Only add if exists. File for complex dependencies and configurations
 if [ -f $HOME/.my_shell_stuff ]; then
    . $HOME/.my_shell_stuff
 fi  
@@ -138,14 +133,6 @@ test alias f5 > /dev/null 2>&1 || alias f5='source $HOME/.bashrc'
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-flag_file="/tmp/flag_file"
-if [ ! -f $flag_file ]
-then
-    command -v fetch >/dev/null 2>&1 && { fetch; touch $flag_file ; }
-    # only works if informant is installed (installed via AUR)
-    command -v informant > /dev/null 2>&1 && { info list --unread; echo; }
-fi
 
 # Starts starship
 eval "$(starship init bash)"
