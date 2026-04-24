@@ -47,5 +47,20 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 # Install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
+# install go
+## Set variables for the version and filename
+VERSION="go1.26.2"
+OS="linux"
+ARCH="amd64"
+FILENAME="${VERSION}.${OS}-${ARCH}.tar.gz"
+## Download the Go archive
+curl -L "https://dl.google.com/go/${FILENAME}" -o /tmp/${FILENAME}
+## Download the checksum file
+curl -L "https://dl.google.com/go/${FILENAME}.sha256" -o /tmp/${FILENAME}
+## Verify the file and install
+actual_hash=$(sha256sum ${FILENAME} | awk '{print $1}' | tr -d '\r\n[:space:]')
+expected_hash="`cat ${FILENAME}.sha256`"
+[ "$actual_hash" = "$expected_hash" ] && sudo tar -C /usr/local -xzf /tmp/${FILENAME}
+
 # Install starship
 curl -sS https://starship.rs/install.sh | sh -s -- -y
