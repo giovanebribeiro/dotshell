@@ -21,6 +21,8 @@ test alias myip > /dev/null 2>&1 || alias myip='curl ipinfo.io/ip'
 test alias net > /dev/null 2>&1 || alias net='netstat -tlnp'
 test alias untar > /dev/null 2>&1 || alias untar='tar -zxvf'
 test alias keygen >/dev/null 2>&1 || alias keygen='ssh-keygen -b 7168 -t rsa'
+test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL https://raw.githubusercontent.com/officialrajdeepsingh/nerd-fonts-installer/main/install.sh)"'
+
 
 # Permite a extração do Dockerfile de uma determinada imagem
 # exemplo de uso: dfimage -sV=1.36 nginx:latest
@@ -204,7 +206,8 @@ aws-login() {
             aws sso login $SSO_SESSION_NAME
         fi
 
-        aws configure export-credentials --profile $PROFILE --format env-no-export
+        eval $(aws configure export-credentials --profile $PROFILE --format env)
+
     fi
 
 }
