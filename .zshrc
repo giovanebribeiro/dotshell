@@ -64,5 +64,5 @@ test alias f5 > /dev/null 2>&1 || alias f5='source $HOME/.zshrc'
 
 # load starship
 eval "$(starship init zsh)"
-
+# load zoxide
 eval "$(zoxide init zsh)"

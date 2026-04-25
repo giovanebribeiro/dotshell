@@ -3,13 +3,13 @@
 # Creates root directories if they don't exist
 mkdir -p "$HOME/.config" >/dev/null 2>&1
 
-OS=`uname`
+OS=$(uname | tr '[:upper:]' '[:lower:]')
 
 case $OS in
-    "Darwin")
+    "darwin")
         SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
         ;;
-    "Linux")
+    "linux")
         SCRIPT_DIR=$(dirname "$(realpath "$0")")
         ;;
 esac
@@ -50,16 +50,15 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # install go
 ## Set variables for the version and filename
 VERSION="go1.26.2"
-OS="linux"
 ARCH="amd64"
 FILENAME="${VERSION}.${OS}-${ARCH}.tar.gz"
 ## Download the Go archive
 curl -L "https://dl.google.com/go/${FILENAME}" -o /tmp/${FILENAME}
 ## Download the checksum file
-curl -L "https://dl.google.com/go/${FILENAME}.sha256" -o /tmp/${FILENAME}
+curl -L "https://dl.google.com/go/${FILENAME}.sha256" -o /tmp/${FILENAME}.sha256
 ## Verify the file and install
-actual_hash=$(sha256sum ${FILENAME} | awk '{print $1}' | tr -d '\r\n[:space:]')
-expected_hash="`cat ${FILENAME}.sha256`"
+actual_hash=$(sha256sum /tmp/${FILENAME} | awk '{print $1}' | tr -d '\r\n[:space:]')
+expected_hash="`cat /tmp/${FILENAME}.sha256`"
 [ "$actual_hash" = "$expected_hash" ] && sudo tar -C /usr/local -xzf /tmp/${FILENAME}
 
 # Install starship
