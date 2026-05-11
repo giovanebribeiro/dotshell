@@ -216,10 +216,77 @@ aws-login() {
 }
 
 # cd remapping
-c() { builtin cd "$@" && l; }
+cd() { 
+    builtin cd "$@" 
+    [ "$PWD" == "$HOME" ] || l;
+}
 
 # mkdir and cd
 mkcd() { mkdir -p "$@" && cd "$@"; }
+
+# Climb 'x'  levels of folder
+up() {
+  local d=""
+  for ((i=1;i<=$1;i++)); do
+    d+="../"
+  done
+  cd "$d"
+}
+
+# Find a file
+ff() { find . -type f -iname "*$1*"; }
+
+# Find a directory
+fd() { find . -type d -iname "*$1*"; }
+
+# Find a process
+psg() { ps aux | grep -i "$1" | grep -v grep; }
+
+# Find an alias
+a() { alias | grep "$1"; }
+
+# Find out the size of a directory
+dirsize() { du -sh "$1"; }
+
+# Universal unpacking
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2) tar xjf "$1" ;;
+      *.tar.gz) tar xzf "$1" ;;
+      *.bz2) bunzip2 "$1" ;;
+      *.rar) unrar x "$1" ;;
+      *.gz) gunzip "$1" ;;
+      *.tar) tar xf "$1" ;;
+      *.tbz2) tar xjf "$1" ;;
+      *.tgz) tar xzf "$1" ;;
+      *.zip) unzip "$1" ;;
+      *.7z) 7z x "$1" ;;
+      *) echo "unknown archive" ;;
+    esac
+  fi
+}
+
+# Find the IP address of a domain
+ipinfo() { dig +short "$1" ; }
+
+# Show open ports
+ports() { ss -tuln ; }
+
+# Safer rm
+rm() {
+  ls -FCsd -- "$@"
+  read -p 'Delete? [y/yy/N] ' ans
+  if [ "$ans" = "y" ]; then
+    # implement a trash bin
+    mkdir -p /tmp/trash 2>&1
+    mv -- "$@" /tmp/trash/
+  fi
+
+  if [ "$ans" = "yy" ]; then
+    command rm -rf -- "$@"
+  fi
+}
 
 # test later
 #changeMac(){
