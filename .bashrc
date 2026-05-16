@@ -134,12 +134,15 @@ test alias f5 > /dev/null 2>&1 || alias f5='source $HOME/.bashrc'
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# load starship
-eval "$(starship init bash)"
-
+# Load atuin
 . "$HOME/.atuin/bin/env"
-
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
 
+# Load zoxide
 eval "$(zoxide init bash)"
+
+# load starship
+eval "$(starship init bash)"
+
+
