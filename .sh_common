@@ -49,7 +49,7 @@ test alias la >/dev/null 2>&1 || alias la='ls -la'
 test alias ll >/dev/null 2>&1 || alias ll='ls -l'
 test alias l >/dev/null 2>&1 || alias l='ls -lAh --color=always'
 #
-test alias wiki >/dev/null 2>&1 || alias wiki='cd $HOME/workspace/telperion && git pull && obsidian && git add --all && git commit -am "wiki updates (notebook)" && git push'
+test alias wiki >/dev/null 2>&1 || alias wiki='cd $HOME/workspace/wiki/telperion && git pull && obsidian && git add --all && git commit -am "wiki updates (notebook)" && git push'
 test alias info >/dev/null 2>&1 || alias info='informant --file $HOME/.cache/informant.dat'
 
 # Daily development
