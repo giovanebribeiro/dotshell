@@ -26,13 +26,23 @@ test alias keygen >/dev/null 2>&1 || alias keygen='ssh-keygen -b 7168 -t rsa'
 test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL https://raw.githubusercontent.com/officialrajdeepsingh/nerd-fonts-installer/main/install.sh)"'
 
 # hledger
-if [ ! -f $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal ]; then
-    touch $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal 
-    command rm $HOME/workspace/brainiac/laurelin/raw/current.journal 2>/dev/null
-    ln -s $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal $HOME/workspace/brainiac/laurelin/raw/current.journal
-    echo "include $(date +'%Y').journal" >> $HOME/workspace/brainiac/laurelin/raw/all.journal
+ARDA=$HOME/workspace/arda
+LAURELIN=$ARDA/laurelin
+JOURNAL_LOC=$LAURELIN/raw
+JOURNAL_FILE=$LAURELIN/raw/$(date +'%Y').journal
+if [ ! -d $ARDA ]; then
+    mkdir -p $HOME/workspace 2>/dev/null
+    git clone git@github.com:giovanebribeiro/arda.git $ARDA
 fi
-test alias h >/dev/null 2>&1 || alias h="hledger -f $HOME/workspace/brainiac/laurelin/raw/current.journal"
+
+if [ ! -f $JOURNAL_FILE ]; then
+    touch $JOURNAL_FILE
+    command rm $JOURNAL_LOC/current.journal 2>/dev/null
+    ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
+    echo "include $(date +'%Y').journal" >> $JOURNAL_LOC/all.journal
+fi
+
+test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
     
 
 # Permite a extração do Dockerfile de uma determinada imagem
