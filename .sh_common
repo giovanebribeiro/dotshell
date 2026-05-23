@@ -25,6 +25,16 @@ test alias untar > /dev/null 2>&1 || alias untar='tar -zxvf'
 test alias keygen >/dev/null 2>&1 || alias keygen='ssh-keygen -b 7168 -t rsa'
 test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL https://raw.githubusercontent.com/officialrajdeepsingh/nerd-fonts-installer/main/install.sh)"'
 
+# hledger
+if [ ! -f $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal ]; then
+    touch $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal 
+    command rm $HOME/workspace/brainiac/laurelin/raw/current.journal 2>/dev/null
+    ln -s $HOME/workspace/brainiac/laurelin/raw/$(date +'%Y').journal $HOME/workspace/brainiac/laurelin/raw/current.journal
+    echo "include $(date +'%Y').journal" >> $HOME/workspace/brainiac/laurelin/raw/all.journal
+fi
+test alias h >/dev/null 2>&1 || alias h="hledger -f $HOME/workspace/brainiac/laurelin/raw/current.journal"
+    
+
 # Permite a extração do Dockerfile de uma determinada imagem
 # exemplo de uso: dfimage -sV=1.36 nginx:latest
 test alias dfimage > /dev/null 2>&1 || alias dfimage="docker run -v /var/run/docker.sock:/var/run/docker.sock --rm alpine/dfimage -sV=1.36"
