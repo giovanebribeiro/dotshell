@@ -129,20 +129,28 @@ if ! shopt -oq posix; then
  fi
 fi
 
+
+if [ -f /usr/share/bash-preexec/bash-preexec.sh ]; then
+    source /usr/share/bash-preexec/bash-preexec.sh
+fi
+
 test alias f5 > /dev/null 2>&1 || alias f5='source $HOME/.bashrc'
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# Load starship
+eval "$(starship init bash)"
+
 # Load atuin
 . "$HOME/.atuin/bin/env"
-[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
 
 # Load zoxide
 eval "$(zoxide init bash)"
 
-# load starship
-eval "$(starship init bash)"
 
-
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
