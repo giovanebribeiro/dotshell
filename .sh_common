@@ -9,7 +9,7 @@
 
 # General Aliases
 test alias cfg > /dev/null 2>&1 || alias cfg='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-test alias up > /dev/null 2>&1 || alias up='up.sh'
+test alias up > /dev/null 2>&1 || alias up='upgrade.sh'
 test alias tmux > /dev/null 2>&1 || alias tmux='tmux -u2'
 test alias clima > /dev/null 2>&1 || alias clima='curl v2.wttr.in'
 test alias bye > /dev/null 2>&1 || alias bye='sudo shutdown -h now'
@@ -26,23 +26,27 @@ test alias keygen >/dev/null 2>&1 || alias keygen='ssh-keygen -b 7168 -t rsa'
 test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL https://raw.githubusercontent.com/officialrajdeepsingh/nerd-fonts-installer/main/install.sh)"'
 
 # hledger
-ARDA=$HOME/workspace/arda
-LAURELIN=$ARDA/laurelin
-JOURNAL_LOC=$LAURELIN/raw
-JOURNAL_FILE=$LAURELIN/raw/$(date +'%Y').journal
-if [ ! -d $ARDA ]; then
-    mkdir -p $HOME/workspace 2>/dev/null
-    git clone git@github.com:giovanebribeiro/arda.git $ARDA
-fi
+if command -v <app_name> >/dev/null 2>&1; then
+    ARDA=$HOME/workspace/arda
+    LAURELIN=$ARDA/laurelin
+    JOURNAL_LOC=$LAURELIN/raw
+    JOURNAL_FILE=$LAURELIN/raw/$(date +'%Y').journal
+    if [ ! -d $ARDA ]; then
+        mkdir -p $HOME/workspace 2>/dev/null
+        git clone git@github.com:giovanebribeiro/arda.git $ARDA
+    fi
 
-if [ ! -f $JOURNAL_FILE ]; then
-    touch $JOURNAL_FILE
-    command rm $JOURNAL_LOC/current.journal 2>/dev/null
-    ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
-    echo "include $(date +'%Y').journal" >> $JOURNAL_LOC/all.journal
-fi
+    if [ ! -f $JOURNAL_FILE ]; then
+        touch $JOURNAL_FILE
+        command rm $JOURNAL_LOC/current.journal 2>/dev/null
+        ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
+        echo "include $(date +'%Y').journal" >> $JOURNAL_LOC/all.journal
+    fi
 
-test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
+    test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
+else
+    echo "!!! WARN: hledger is not installed !!!"
+fi
     
 
 # Permite a extração do Dockerfile de uma determinada imagem
@@ -244,15 +248,6 @@ cd() {
 
 # mkdir and cd
 mkcd() { mkdir -p "$@" && cd "$@"; }
-
-# Climb 'x'  levels of folder
-up() {
-  local d=""
-  for ((i=1;i<=$1;i++)); do
-    d+="../"
-  done
-  cd "$d"
-}
 
 # Find a file
 ff() { find . -type f -iname "*$1*"; }

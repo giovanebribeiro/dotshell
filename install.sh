@@ -44,22 +44,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
+# install sdkman
+curl -s "https://get.sdkman.io" | bash
+
 # Install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# install go
-## Set variables for the version and filename
-VERSION="go1.26.2"
-ARCH="amd64"
-FILENAME="${VERSION}.${OS}-${ARCH}.tar.gz"
-## Download the Go archive
-curl -L "https://dl.google.com/go/${FILENAME}" -o /tmp/${FILENAME}
-## Download the checksum file
-curl -L "https://dl.google.com/go/${FILENAME}.sha256" -o /tmp/${FILENAME}.sha256
-## Verify the file and install
-actual_hash=$(sha256sum /tmp/${FILENAME} | awk '{print $1}' | tr -d '\r\n[:space:]')
-expected_hash="`cat /tmp/${FILENAME}.sha256`"
-[ "$actual_hash" = "$expected_hash" ] && sudo tar -C /usr/local -xzf /tmp/${FILENAME}
 
 # Install starship
 curl -sS https://starship.rs/install.sh | sh -s -- -y
