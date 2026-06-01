@@ -41,6 +41,10 @@ if command -v hledger >/dev/null 2>&1; then
         command rm $JOURNAL_LOC/current.journal 2>/dev/null
         ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
         echo "include $(date +'%Y').journal" >> $JOURNAL_LOC/all.journal
+    else
+        if [ ! -f  $JOURNAL_LOC/current.journal ]; then
+            ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
+        fi    
     fi
 
     test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
