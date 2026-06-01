@@ -28,9 +28,8 @@ test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL ht
 # hledger
 if command -v hledger >/dev/null 2>&1; then
     ARDA=$HOME/workspace/arda
-    LAURELIN=$ARDA/laurelin
-    JOURNAL_LOC=$LAURELIN/raw
-    JOURNAL_FILE=$LAURELIN/raw/$(date +'%Y').journal
+    JOURNAL_LOC=$ARDA/raw/transactions
+    JOURNAL_FILE=$JOURNAL_LOC/$(date +'%Y').journal
     if [ ! -d $ARDA ]; then
         mkdir -p $HOME/workspace 2>/dev/null
         git clone git@github.com:giovanebribeiro/arda.git $ARDA
