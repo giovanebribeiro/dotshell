@@ -46,7 +46,10 @@ if command -v hledger >/dev/null 2>&1; then
         fi    
     fi
 
-    test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
+    if [ ! -f "$ARDA/.venv/bin/python" ]; then
+        uv venv "$ARDA/.venv" --quiet && uv pip install -r "$ARDA/scripts/requirements.txt" --python "$ARDA/.venv" --quiet
+    fi
+    test alias h >/dev/null 2>&1 || alias h="$ARDA/.venv/bin/python $ARDA/scripts/hl.py"
 else
     echo "!!! WARN: hledger is not installed !!!"
 fi
