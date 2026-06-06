@@ -150,3 +150,4 @@ eval "$(atuin init bash)"
 
 # Load zoxide
 eval "$(zoxide init bash)"
+export PATH=$PATH:$HOME/.local/bin
