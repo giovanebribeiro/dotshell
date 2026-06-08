@@ -18,19 +18,34 @@ DOTSHELLRC_FILE="$HOME/.dotshellrc"
 [ -f "$DOTSHELLRC_FILE"  ] && DOTSHELL_LOC=$(cat "$DOTSHELLRC_FILE") || DOTSHELL_LOC="$HOME/.dotshell"
 cd $DOTSHELL_LOC
 
-# Store the current commit hash of the local branch
-current_commit=$(git rev-parse HEAD)
-# Fetch remote changes without merging
-git fetch
-# Store the commit hash of the remote-tracking branch
-remote_commit=$(git rev-parse @{u})
-# Compare the local and remote-tracking branch commit hashes
-if [ "$current_commit" != "$remote_commit"  ]; then
-    echo "Updating script..."
-    git pull
-    # reloading
-    source $HOME/.bashrc
-fi
+UP_FILE="$HOME/.filesupdated"
+
+upgrade(){
+    # Fetch remote changes without merging
+    git fetch
+    remote_commit=$(git rev-parse @{u})
+
+    if [ ! -f $UP_FILE ]; then
+        echo "$UP_FILE not exists, upgrade it anyway"
+        echo $remote_commit > $UP_FILE
+        git pull
+        # reloading this file
+        source $HOME/.bashrc
+    else
+        echo "$UP_FILE exists, check if need upgrade"
+        current_commit=`cat $UP_FILE`
+        if [ "$current_commit" != "$remote_commit"  ]; then
+            echo "Updating script..."
+            echo $remote_commit > $UP_FILE
+            git pull
+            # reloading this file
+            source $HOME/.bashrc
+        fi
+    fi
+
+}
+
+upgrade
 cd $BASEDIR
 
 ## Useful variables
