@@ -40,9 +40,16 @@ if command -v hledger >/dev/null 2>&1; then
         command rm $JOURNAL_LOC/current.journal 2>/dev/null
         ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
         echo "include $(date +'%Y').journal" >> $JOURNAL_LOC/all.journal
+    else
+        if [ ! -f  $JOURNAL_LOC/current.journal ]; then
+            ln -s $JOURNAL_FILE $JOURNAL_LOC/current.journal
+        fi    
     fi
 
-    test alias h >/dev/null 2>&1 || alias h="hledger -f $JOURNAL_LOC/current.journal"
+    if [ ! -f "$ARDA/.venv/bin/python" ]; then
+        uv venv "$ARDA/.venv" --quiet && uv pip install -r "$ARDA/scripts/requirements.txt" --python "$ARDA/.venv" --quiet
+    fi
+    test alias h >/dev/null 2>&1 || alias h="$ARDA/.venv/bin/python $ARDA/scripts/hl.py"
 else
     echo "!!! WARN: hledger is not installed !!!"
 fi
@@ -82,6 +89,16 @@ test alias claude-dev >/dev/null 2>&1 || alias claude-dev='claude --system-promp
 test alias claude-review >/dev/null 2>&1 || alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
 # Research/exploration mode
 test alias claude-research >/dev/null 2>&1 || alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+
+##
+# EXPORTS
+##
+if [ -d $HOME/.exports ]; then
+    for f in "$HOME/.exports"/*; do
+        filename=$(basename $f)
+        export $filename=$(cat $f)
+    done
+fi
 
 ##
 # FUNCTIONS/APPS
