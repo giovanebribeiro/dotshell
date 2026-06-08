@@ -26,13 +26,13 @@ upgrade(){
     remote_commit=$(git rev-parse @{u})
 
     if [ ! -f $UP_FILE ]; then
-        echo "$UP_FILE not exists, upgrade it anyway"
+        #echo "$UP_FILE not exists, upgrade it anyway"
         echo $remote_commit > $UP_FILE
         git pull
         # reloading this file
         source $HOME/.bashrc
     else
-        echo "$UP_FILE exists, check if need upgrade"
+        #echo "$UP_FILE exists, check if need upgrade"
         current_commit=`cat $UP_FILE`
         if [ "$current_commit" != "$remote_commit"  ]; then
             echo "Updating script..."
