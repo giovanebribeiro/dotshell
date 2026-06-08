@@ -118,6 +118,8 @@ if [ -f $HOME/.my_shell_stuff ]; then
    . $HOME/.my_shell_stuff
 fi  
 
+[[ -f $HOME/.bash-preexec.sh ]] && source $HOME/.bash-preexec.sh
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -148,3 +150,4 @@ eval "$(atuin init bash)"
 
 # Load zoxide
 eval "$(zoxide init bash)"
+export PATH=$PATH:$HOME/.local/bin
