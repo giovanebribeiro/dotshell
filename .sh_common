@@ -27,11 +27,10 @@ test alias nerdfont >/dev/null 2>&1 || alias nerdfont='bash -c  "$(curl -fsSL ht
 
 # hledger
 if command -v hledger >/dev/null 2>&1; then
-    ARDA=$HOME/workspace/arda
+    ARDA=$HOME/arda
     JOURNAL_LOC=$ARDA/raw/transactions
     JOURNAL_FILE=$JOURNAL_LOC/$(date +'%Y').journal
     if [ ! -d $ARDA ]; then
-        mkdir -p $HOME/workspace 2>/dev/null
         git clone git@github.com:giovanebribeiro/arda.git $ARDA
     fi
 
@@ -91,6 +90,8 @@ test alias claude-dev >/dev/null 2>&1 || alias claude-dev='claude --system-promp
 test alias claude-review >/dev/null 2>&1 || alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
 # Research/exploration mode
 test alias claude-research >/dev/null 2>&1 || alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+
+test alias t >/dev/null 2>&1 || alias t='todo.sh'
 
 ##
 # EXPORTS
@@ -359,7 +360,7 @@ rm() {
 #}
 #test alias b >/dev/null 2>&1 || alias b='list-hyprland-bindings'
 
-klogs() {
+klogs() { # check the logs of a pod in k8s cluster
     if [ "$#" -eq 0 ]; then
         k_namespace="default"
     else
@@ -369,7 +370,7 @@ klogs() {
     kubectl logs -f -n $k_namespace $(kubectl get pods -n $k_namespace -o=jsonpath='{range .items..metadata}{.name}{"\n"}{end}' | fgrep $k_pod_init_name)
 }
 
-kdelete() {
+kdelete() { # delete a pod in k8s cluster
     if [ "$#" -eq 0 ]; then
         k_namespace="default"
     else
@@ -377,6 +378,16 @@ kdelete() {
         k_pod_init_name=$2
     fi
     kubectl delete pod -n $k_namespace $(kubectl get pods -n $k_namespace -o=jsonpath='{range .items..metadata}{.name}{"\n"}{end}' | fgrep $k_pod_init_name)
+}
+
+kpods() { # get the list of pods from a specific namespace in k8s cluster
+    if [ "$#" -eq 0 ]; then
+        k_namespace="default"
+    else
+        k_namespace=$1
+        k_pod_init_name=$2
+    fi
+    kubectl get pods -n $k_namespace -w
 }
 
 # test later
@@ -421,6 +432,9 @@ export SDKMAN_DIR="$HOME/.sdkman"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Loads todo_completion
+[ -s "$HOME/.local/bin/todo_completion" ] && \. "$HOME/.local/bin/todo_completion"
 
 # Loads uv/uvx
 . "$HOME/.local/share/../bin/env"
