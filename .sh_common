@@ -394,6 +394,11 @@ kpods() { # get the list of pods from a specific namespace in k8s cluster
     kubectl get pods -n $k_namespace -w
 }
 
+# To use Emacs after a pipe in Linux. Usage: cat log.txt | pemacs
+pemacs() { 
+    emacs - --eval '(set-visited-file-name nil)' --eval '(set-buffer-modified-p nil)' 
+}
+
 # test later
 #changeMac(){
 #  local mac=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
